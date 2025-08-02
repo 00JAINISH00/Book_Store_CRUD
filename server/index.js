@@ -8,16 +8,11 @@ databaseConnection();
 const cors = require('cors');
 const app = express();
 
-// CORS configuration
+// Allow all origins for testing
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://book-store-crud-xeu6-928log2e1-00jainish00s-projects.vercel.app',
-    'https://book-store-crud.vercel.app',
-    'https://*.vercel.app'
-  ],
-  credentials: true
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());

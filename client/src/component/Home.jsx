@@ -4,8 +4,8 @@ import DataTable from "react-data-table-component";
 import { columns } from '../utils/BooksHelper';
 import { useEffect } from 'react';
 
-// API base URL - use environment variable or fallback to production URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://book-store-crud-9apg.onrender.com';
+// Hardcoded API URL for immediate testing
+const API_BASE_URL = 'https://book-store-crud-9apg.onrender.com';
 
 const Home = () => {
 
