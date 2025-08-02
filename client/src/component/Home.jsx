@@ -4,6 +4,8 @@ import DataTable from "react-data-table-component";
 import { columns } from '../utils/BooksHelper';
 import { useEffect } from 'react';
 
+// API base URL - use environment variable or fallback to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const Home = () => {
 
@@ -46,14 +48,14 @@ const Home = () => {
       if (isEditing) {
         // Update existing book
         const response = await axios.put(
-          `http://localhost:3000/book/updateBook/${editingId}`,
+          `${API_BASE_URL}/api/book/updateBook/${editingId}`,
           bookForm
         );
         alert("Book updated successfully");
       } else {
         // Add new book
         const response = await axios.post(
-          "http://localhost:3000/book/addBook",
+          `${API_BASE_URL}/api/book/addBook`,
           bookForm
         );
         alert("Book added successfully");
@@ -68,7 +70,7 @@ const Home = () => {
 
   const featchBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/books/getBooks");
+      const response = await axios.get(`${API_BASE_URL}/api/books/getBooks`);
       if(response.data.success) {
         let sno = 1;
         const data = response.data.data.map((book) => ({
@@ -95,7 +97,7 @@ const Home = () => {
     if (window.confirm("Are you sure you want to delete this book?")) {
       try {
         const response = await axios.delete(
-          `http://localhost:3000/book/deleteBook/${id}`
+          `${API_BASE_URL}/api/book/deleteBook/${id}`
         );
         alert("Book deleted successfully");
         featchBooks(); // Refresh the book list after deletion
