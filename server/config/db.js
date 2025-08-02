@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const databaseConnection = async() =>{
-    // For local development, use local MongoDB
-    const MONGODB_URI = 'mongodb://127.0.0.1:27017/bookstore';
+    // Use environment variable for MongoDB URI, fallback to local for development
+    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
     
     console.log('Connecting to database...');
     console.log('MongoDB URI:', MONGODB_URI);
