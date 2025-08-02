@@ -8,7 +8,17 @@ databaseConnection();
 const cors = require('cors');
 const app = express();
 
-app.use(cors()); 
+// CORS configuration
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://book-store-crud-xeu6-928log2e1-00jainish00s-projects.vercel.app',
+    'https://book-store-crud.vercel.app',
+    'https://*.vercel.app'
+  ],
+  credentials: true
+}));
 
 app.use(express.json());
 
