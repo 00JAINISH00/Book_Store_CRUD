@@ -10,21 +10,13 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://book-store-crud-xeu6.vercel.app',
-    'https://jainish.dev',
-    '*'
-  ],
+  origin: true, // Allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
   credentials: true
 }));
 
 app.use(express.json());
-
-// Handle preflight requests
-app.options('*', cors());
 
 app.use('/api/book', bookRoutes);
 app.use('/api/books', bookRoutes);
