@@ -5,7 +5,10 @@ import { columns } from '../utils/BooksHelper';
 import { useEffect } from 'react';
 
 // Hardcoded API URL for immediate testing
-const API_BASE_URL = 'https://book-store-crud-9apg.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+axios.get(`${API_BASE_URL}/books`);
+
 
 const Home = () => {
 
