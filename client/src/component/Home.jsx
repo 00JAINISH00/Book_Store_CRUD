@@ -78,10 +78,11 @@ const Home = () => {
       setLoading(true);
       console.log('Fetching books from:', `${API_BASE_URL}/api/book/getBooks`);
       
-      const response = await axios.get(`${API_BASE_URL}/api/book/getBooks`, {
+      const response = await axios.get(`${API_BASE_URL}/api/book/getBooks?t=${Date.now()}`, {
         timeout: 10000, // 10 second timeout
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
         }
       });
       console.log('API Response:', response.data);
