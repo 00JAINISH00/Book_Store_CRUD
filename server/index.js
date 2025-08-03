@@ -10,7 +10,7 @@ const app = express();
 
 // Allow all origins for testing
 app.use(cors({
-  origin: '*',
+  origin: ['*', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));

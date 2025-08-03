@@ -4,11 +4,8 @@ import DataTable from "react-data-table-component";
 import { columns } from '../utils/BooksHelper';
 import { useEffect } from 'react';
 
-// Hardcoded API URL for immediate testing
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-axios.get(`${API_BASE_URL}/books`);
-
+// API URL configuration with fallback
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://your-render-backend-url.onrender.com';
 
 const Home = () => {
 
@@ -22,6 +19,7 @@ const Home = () => {
   const [books, setBooks] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +46,7 @@ const Home = () => {
     return;
   }
     try {
+      setLoading(true);
       if (isEditing) {
         // Update existing book
         const response = await axios.put(
@@ -67,13 +66,21 @@ const Home = () => {
       resetForm();
       featchBooks();
     } catch (error) {
-      alert(error.message);
+      console.error('Error submitting book:', error);
+      alert(`Error: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   const featchBooks = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/books/getBooks`);
+      setLoading(true);
+      console.log('Fetching books from:', `${API_BASE_URL}/api/book/getBooks`);
+      
+      const response = await axios.get(`${API_BASE_URL}/api/book/getBooks`);
+      console.log('API Response:', response.data);
+      
       if(response.data.success) {
         let sno = 1;
         const data = response.data.data.map((book) => ({
@@ -86,26 +93,38 @@ const Home = () => {
           publishDate: book.publishDate,
         }))
         setBooks(data);
+      } else {
+        console.error('API returned success: false');
+        setBooks([]);
       }
-    }catch(error){
-      alert(error.message);
+    } catch(error) {
+      console.error('Error fetching books:', error);
+      alert(`Error fetching books: ${error.response?.data?.message || error.message}`);
+      setBooks([]);
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
+    console.log('API Base URL:', API_BASE_URL);
     featchBooks();
   }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this book?")) {
       try {
+        setLoading(true);
         const response = await axios.delete(
           `${API_BASE_URL}/api/book/deleteBook/${id}`
         );
         alert("Book deleted successfully");
         featchBooks(); // Refresh the book list after deletion
       } catch (error) {
-        alert(error.message);
+        console.error('Error deleting book:', error);
+        alert(`Error deleting book: ${error.response?.data?.message || error.message}`);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -132,6 +151,15 @@ const Home = () => {
 
   return (
     <>
+    {/* Debug Info - Remove this in production */}
+    <div className="w-full px-5 py-2 bg-yellow-100 border-b border-yellow-300">
+      <div className="max-w-4xl mx-auto text-sm">
+        <p><strong>Debug Info:</strong> API URL: {API_BASE_URL}</p>
+        <p><strong>Status:</strong> {loading ? 'Loading...' : 'Ready'}</p>
+        <p><strong>Books Count:</strong> {books.length}</p>
+      </div>
+    </div>
+    
     <div className="w-full px-5 py-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="w-full max-w-md mx-auto bg-white shadow-xl rounded-xl p-8 border border-gray-100">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
@@ -202,9 +230,14 @@ const Home = () => {
           <div className="flex space-x-3 pt-2">
             <button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+              disabled={loading}
+              className={`flex-1 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 ${
+                loading 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
+              }`}
             >
-              {isEditing ? "Update" : "Submit"}
+              {loading ? 'Processing...' : (isEditing ? "Update" : "Submit")}
             </button>
             {isEditing && (
               <button
