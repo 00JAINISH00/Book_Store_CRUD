@@ -5,7 +5,7 @@ import { columns } from '../utils/BooksHelper';
 import { useEffect } from 'react';
 
 // API URL configuration with fallback
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://your-render-backend-url.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://book-store-crud-9apg.onrender.com';
 
 const Home = () => {
 
@@ -107,7 +107,11 @@ const Home = () => {
   }
 
   useEffect(() => {
-    console.log('API Base URL:', API_BASE_URL);
+    console.log('=== DEBUG INFO ===');
+    console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+    console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+    console.log('Final API Base URL:', API_BASE_URL);
+    console.log('==================');
     featchBooks();
   }, []);
 
@@ -154,9 +158,18 @@ const Home = () => {
     {/* Debug Info - Remove this in production */}
     <div className="w-full px-5 py-2 bg-yellow-100 border-b border-yellow-300">
       <div className="max-w-4xl mx-auto text-sm">
-        <p><strong>Debug Info:</strong> API URL: {API_BASE_URL}</p>
-        <p><strong>Status:</strong> {loading ? 'Loading...' : 'Ready'}</p>
-        <p><strong>Books Count:</strong> {books.length}</p>
+        <p><strong>Debug Info:</strong></p>
+        <p>• VITE_API_BASE_URL: {import.meta.env.VITE_API_BASE_URL || 'Not set'}</p>
+        <p>• VITE_API_URL: {import.meta.env.VITE_API_URL || 'Not set'}</p>
+        <p>• Final API URL: {API_BASE_URL}</p>
+        <p>• Status: {loading ? 'Loading...' : 'Ready'}</p>
+        <p>• Books Count: {books.length}</p>
+        <button 
+          onClick={featchBooks}
+          className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+        >
+          Test API Connection
+        </button>
       </div>
     </div>
     
