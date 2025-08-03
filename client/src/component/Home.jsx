@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 
 // API URL configuration with fallback
 const API_BASE_URL = 'https://book-store-crud-9apg.onrender.com'; // Hardcoded for testing
+const VERSION = Date.now(); // Force cache busting
 
 const Home = () => {
 
@@ -130,6 +131,7 @@ const Home = () => {
 
   useEffect(() => {
     console.log('=== DEBUG INFO ===');
+    console.log('VERSION:', VERSION);
     console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
     console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
     console.log('Final API Base URL:', API_BASE_URL);
