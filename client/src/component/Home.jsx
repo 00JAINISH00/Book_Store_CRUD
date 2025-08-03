@@ -5,7 +5,7 @@ import { columns } from '../utils/BooksHelper';
 import { useEffect } from 'react';
 
 // API URL configuration with fallback
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'https://book-store-crud-9apg.onrender.com';
+const API_BASE_URL = 'https://book-store-crud-9apg.onrender.com'; // Hardcoded for testing
 
 const Home = () => {
 
@@ -78,7 +78,12 @@ const Home = () => {
       setLoading(true);
       console.log('Fetching books from:', `${API_BASE_URL}/api/book/getBooks`);
       
-      const response = await axios.get(`${API_BASE_URL}/api/book/getBooks`);
+      const response = await axios.get(`${API_BASE_URL}/api/book/getBooks`, {
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       console.log('API Response:', response.data);
       
       if(response.data.success) {
@@ -99,7 +104,23 @@ const Home = () => {
       }
     } catch(error) {
       console.error('Error fetching books:', error);
-      alert(`Error fetching books: ${error.response?.data?.message || error.message}`);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        response: error.response,
+        request: error.request
+      });
+      
+      let errorMessage = 'Network Error';
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Request timeout - backend might be sleeping';
+      } else if (error.response) {
+        errorMessage = `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        errorMessage = 'No response from server - check backend URL';
+      }
+      
+      alert(`Error fetching books: ${errorMessage}`);
       setBooks([]);
     } finally {
       setLoading(false);
@@ -112,7 +133,11 @@ const Home = () => {
     console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
     console.log('Final API Base URL:', API_BASE_URL);
     console.log('==================');
-    featchBooks();
+    
+    // Add a small delay to ensure backend is awake
+    setTimeout(() => {
+      featchBooks();
+    }, 2000);
   }, []);
 
   const handleDelete = async (id) => {
