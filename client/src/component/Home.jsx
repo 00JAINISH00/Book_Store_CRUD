@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 // API URL configuration with fallback
 const API_BASE_URL = 'https://book-store-crud-9apg.onrender.com'; // Hardcoded for testing
 const VERSION = Date.now(); // Force cache busting
+const BUILD_TIME = new Date().toISOString(); // Additional cache busting
 
 const Home = () => {
 
@@ -132,15 +133,14 @@ const Home = () => {
   useEffect(() => {
     console.log('=== DEBUG INFO ===');
     console.log('VERSION:', VERSION);
+    console.log('BUILD_TIME:', BUILD_TIME);
     console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
     console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
     console.log('Final API Base URL:', API_BASE_URL);
     console.log('==================');
     
-    // Add a small delay to ensure backend is awake
-    setTimeout(() => {
-      featchBooks();
-    }, 2000);
+    // Force immediate fetch
+    featchBooks();
   }, []);
 
   const handleDelete = async (id) => {
